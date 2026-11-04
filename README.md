@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/banner.png" alt="Soft Color Calibrator: calibrate your monitor with a webcam or your phone. It sets the monitor itself over DDC/CI, no color profile needed" width="100%">
+  <img src="docs/assets/banner.png" alt="Soft Color Calibrator: calibrate your monitor with a webcam or your phone. It sets the monitor itself over DDC/CI, no color profile needed" width="100%">
 </p>
 
 <p align="center">
@@ -24,14 +24,14 @@ matches your monitor's white to another screen. Your phone measures with **SoftC
 
 <table>
   <tr>
-    <td width="50%"><img src="images/measure.png" alt="The Measure step: SoftCal has set Contrast to 60, then 50, then 55 over DDC/CI, measuring after each"><br><b>Measure:</b> SoftCal sets each value on the monitor itself, then measures again.</td>
-    <td width="50%"><img src="images/result.png" alt="The Result step: Contrast 70 to 50, Red, Green and Blue 100/100/100 to 96/90/99, set on the monitor"><br><b>Result:</b> the new values are on the monitor, every one with the reason.</td>
+    <td width="50%"><img src="docs/assets/screens/measure.png" alt="The Measure step: SoftCal has set Contrast to 60, then 50, then 55 over DDC/CI, measuring after each"><br><b>Measure:</b> SoftCal sets each value on the monitor itself, then measures again.</td>
+    <td width="50%"><img src="docs/assets/screens/result.png" alt="The Result step: Contrast 70 to 50, Red, Green and Blue 100/100/100 to 96/90/99, set on the monitor"><br><b>Result:</b> the new values are on the monitor, every one with the reason.</td>
   </tr>
 </table>
 
 ## It sets your monitor directly
 
-<p align="center"><img src="images/sets-the-monitor.png" alt="SoftCal, on the PC, writes over DDC/CI through the display cable to the monitor's own settings: Contrast 70 to 50, Red, Green and Blue 100 to 96, 90 and 99. No color profile to install, every app and game sees it, put back if a run stops" width="100%"></p>
+<p align="center"><img src="docs/assets/screens/sets-the-monitor.png" alt="SoftCal, on the PC, writes over DDC/CI through the display cable to the monitor's own settings: Contrast 70 to 50, Red, Green and Blue 100 to 96, 90 and 99. No color profile to install, every app and game sees it, put back if a run stops" width="100%"></p>
 
 SoftCal changes the monitor's own **Brightness**, **Contrast** and **Red, Green, Blue** over DDC/CI, the control
 channel in your display cable, as the monitor's buttons would. The correction lives in the monitor: no color profile or
@@ -62,7 +62,7 @@ only **which of two things is brighter**. It shows fine black and white lines wh
 finds the gray the camera cannot tell from the lines: the camera's own response cancels out. On the development
 monitors, repeated runs agree to about a tenth of a code value, and gamma to within 0.02.
 
-<p align="center"><img src="images/how-it-works.png" alt="On the screen, fine lines then a gray; the camera, out of focus, reads the lines as a gray; the gray it cannot tell from the lines is half of white" width="100%"></p>
+<p align="center"><img src="docs/assets/screens/how-it-works.png" alt="On the screen, fine lines then a gray; the camera, out of focus, reads the lines as a gray; the gray it cannot tell from the lines is half of white" width="100%"></p>
 
 1. **Your monitor:** choose it, and the screen whose white it should match.
 2. **Camera:** rest the camera on the screen in a short black paper tube. A live view shows when it is straight.
@@ -75,15 +75,15 @@ monitors, repeated runs agree to about a tenth of a code value, and gamma to wit
 <br>
 <table>
   <tr>
-    <td width="50%"><img src="images/white.png" alt="White matching: SoftCal sets Red, Green and Blue over DDC/CI, 93/87/99, then 98/91/100, then 96/90/99, reading the white after each"><br><b>White matching:</b> SoftCal sets red, green and blue until the white matches another screen.</td>
-    <td width="50%"><img src="images/report.png" alt="The full report of a BenQ ZOWIE XL: tone curve against gamma 2.2, and findings"><br><b>Full display report,</b> compared with an earlier one.</td>
+    <td width="50%"><img src="docs/assets/screens/white.png" alt="White matching: SoftCal sets Red, Green and Blue over DDC/CI, 93/87/99, then 98/91/100, then 96/90/99, reading the white after each"><br><b>White matching:</b> SoftCal sets red, green and blue until the white matches another screen.</td>
+    <td width="50%"><img src="docs/assets/screens/report.png" alt="The full report of a BenQ ZOWIE XL: tone curve against gamma 2.2, and findings"><br><b>Full display report,</b> compared with an earlier one.</td>
   </tr>
   <tr>
-    <td><img src="images/calibration.png" alt="The Windows calibration file: gamma 2.43 to 2.20, yellowish grays to neutral"><br><b>Windows calibration file:</b> the display with and without the curves.</td>
-    <td><img src="images/monitor.png" alt="A profile beside the monitor's settings, read over DDC/CI"><br><b>Your monitor:</b> its settings read over DDC/CI, kept in profiles, loaded back with one button.</td>
+    <td><img src="docs/assets/screens/calibration.png" alt="The Windows calibration file: gamma 2.43 to 2.20, yellowish grays to neutral"><br><b>Windows calibration file:</b> the display with and without the curves.</td>
+    <td><img src="docs/assets/screens/monitor.png" alt="A profile beside the monitor's settings, read over DDC/CI"><br><b>Your monitor:</b> its settings read over DDC/CI, kept in profiles, loaded back with one button.</td>
   </tr>
 </table>
-<p align="center"><img src="images/phones.png" alt="SoftCal Camera on Android, showing its pairing code, and on an iPhone, placed on SoftCal's aiming grid" width="480"></p>
+<p align="center"><img src="docs/assets/screens/phones.png" alt="SoftCal Camera on Android, showing its pairing code, and on an iPhone, placed on SoftCal's aiming grid" width="480"></p>
 <sub>The report and the monitor page come from a real monitor; the other screens from SoftCal's simulator (Advanced ›
 Simulator), which lets you try the app without a camera, SoftCal setting its demo monitor over DDC/CI included. The
 phone screens are drawn from SoftCal Camera's layout.</sub>

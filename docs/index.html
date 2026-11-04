@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soft Color Calibrator</title>
+<meta name="description" content="Calibrate your monitor with a camera you already own: a USB webcam, or your Android phone, iPhone or iPad. SoftCal sets the monitor's own brightness, contrast and colors over DDC/CI, with no color profile. Free and open source, for Windows 11.">
+<meta property="og:title" content="Soft Color Calibrator">
+<meta property="og:description" content="Calibrate your monitor with a webcam or your phone. It sets the monitor's own brightness, contrast and colors, no color profile needed. Free and open source, for Windows 11.">
+<meta property="og:image" content="https://alexandrewillame.github.io/soft-color-calibrator/assets/banner.png">
+<link rel="icon" href="assets/logo-256.png">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="assets/logo-256.png" alt="">Soft Color Calibrator</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#download">Download</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/alexandrewillame/soft-color-calibrator">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Calibrate your monitor with a camera you already own</h1>
+      <p class="lead">Soft Color Calibrator measures your monitor through a USB webcam or your phone (Android, iPhone or
+        iPad), then changes the monitor's own brightness, contrast and colors directly from the app, over DDC/CI: no
+        color profile needed. It also matches its white to another screen. Free and open source.</p>
+      <div class="buttons">
+        <a class="button primary" href="https://github.com/alexandrewillame/soft-color-calibrator/releases/latest">Download for Windows<small>Windows 11 · free</small></a>
+        <a class="button" href="#phone">SoftCal Camera for phones<small>Android, iPhone, iPad: coming soon</small></a>
+      </div>
+      <p class="note">An early version: <a href="https://github.com/alexandrewillame/soft-color-calibrator/issues">feedback is welcome</a>.</p>
+    </div>
+    <img class="art" src="assets/screens/hero.png" width="1600" height="1128"
+         alt="SoftCal's result: Contrast lowered from 70 to 50 and the white matched to another screen, beside SoftCal Camera measuring on a phone">
+  </div>
+</div>
+
+<section id="sets">
+  <div class="wrap">
+    <h2>It sets your monitor directly</h2>
+    <p class="intro">SoftCal changes the monitor's own <strong>brightness</strong>, <strong>contrast</strong> and
+      <strong>red, green, blue</strong> over DDC/CI, the control channel in your display cable, as the monitor's buttons
+      would. The correction lives in the monitor: no color profile or graphics-card curves to keep loaded, so every
+      app and game sees it. Each value is measured again after it is set, and everything SoftCal sets is put back if a run
+      stops. A monitor without DDC/CI gets each value to set in its menu instead.</p>
+    <p class="diagram"><img src="assets/screens/sets-the-monitor.png" width="1600" height="630" loading="lazy"
+      alt="SoftCal, on the PC, writes over DDC/CI through the display cable to the monitor's own settings: Contrast 70 to 50, Red, Green and Blue 100 to 96, 90 and 99. No color profile to install, every app and game sees it, put back if a run stops"></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why a camera works</h2>
+    <p class="intro">A camera is not a colorimeter: its colors and tone curve are its own. So SoftCal never asks it what it
+      sees, only <strong>which of two things is brighter</strong>. It shows a fine pattern of black and white lines whose light
+      is known, then grays, one after the other, and finds the gray the camera cannot tell from the lines. That holds whatever
+      the camera's curve, white balance or processing. Per color channel, the same comparison finds the gray balance;
+      one camera looking at two screens tells whether their whites match. Repeated runs agree to about a tenth of a
+      code value.</p>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="intro">One measurement of about 2 to 3 minutes, then clear answers.</p>
+    <div class="grid">
+      <div class="card"><h3><span class="dot" style="background: var(--red)"></span>Sets your monitor directly</h3>
+        <p>Brightness, contrast and red, green, blue changed in the monitor itself, over DDC/CI, one change at a time,
+          each checked by measuring. No color profile needed; without DDC/CI, each value for its menu.</p></div>
+      <div class="card"><h3><span class="dot" style="background: var(--green)"></span>White matching</h3>
+        <p>Makes your monitor's white match another screen on the same PC, setting red, green and blue until two
+          screens side by side look the same.</p></div>
+      <div class="card"><h3><span class="dot" style="background: var(--blue)"></span>Windows calibration file</h3>
+        <p>Optional, for what the monitor's settings cannot fix: creates, tries and installs an ICC profile with
+          calibration curves, and keeps them loaded after sleep and sign-in.</p></div>
+      <div class="card"><h3><span class="dot" style="background: var(--teal)"></span>Display report</h3>
+        <p>Tone curve and gamma, gray balance at every level, crushed blacks, clipped whites, contrast, and before and
+          after comparisons.</p></div>
+      <div class="card"><h3><span class="dot" style="background: var(--red)"></span>Profiles</h3>
+        <p>Different settings for day, night or games, loaded back onto the monitor over DDC/CI with one button. Every
+          overwrite shows what will change first.</p></div>
+      <div class="card"><h3><span class="dot" style="background: var(--green)"></span>Safe by design</h3>
+        <p>Everything SoftCal changes (graphics card curves, camera, monitor values, HDR) is recorded and put back,
+          even if the app crashes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="intro">Four steps, guided on screen.</p>
+    <ol class="steps">
+      <li><h3>Your monitor</h3><p>Choose the monitor to measure, and the screen whose white it should match.</p></li>
+      <li><h3>Camera</h3><p>Rest the camera on the screen in a short black paper tube. A level shows when it is straight.</p></li>
+      <li><h3>Measure</h3><p>SoftCal shows patches and compares them, and sets each value on the monitor itself, or asks you to in its menu.</p></li>
+      <li><h3>Result</h3><p>Before and after values for every setting, each with the reason, already set on the monitor.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <h2>See it</h2>
+    <p class="intro">The report and the monitor page are from a real monitor; the other screens are from SoftCal's
+      built-in simulator (Advanced › Simulator), which lets you try it without a camera, setting its demo monitor over
+      DDC/CI included.</p>
+    <div class="shots">
+      <figure><img src="assets/screens/measure.png" width="1600" height="1173" loading="lazy" alt="SoftCal has set Contrast to 60, then 50, then 55 over DDC/CI, measuring after each">
+        <figcaption><strong>Measure.</strong> SoftCal sets each value on the monitor itself, then measures again.</figcaption></figure>
+      <figure><img src="assets/screens/result.png" width="1600" height="1173" loading="lazy" alt="Every setting before and after: Contrast 70 to 50, Red, Green and Blue 100/100/100 to 96/90/99, set on the monitor">
+        <figcaption><strong>Result.</strong> Every setting before and after, and why, already on the monitor.</figcaption></figure>
+      <figure><img src="assets/screens/white.png" width="1600" height="1173" loading="lazy" alt="SoftCal sets Red, Green and Blue over DDC/CI, 93/87/99, then 98/91/100, then 96/90/99, reading the white after each">
+        <figcaption><strong>White matching.</strong> SoftCal sets red, green and blue until the white matches another screen's.</figcaption></figure>
+      <figure><img src="assets/screens/report.png" width="1600" height="1173" loading="lazy" alt="The full report of a BenQ ZOWIE XL: tone curve against gamma 2.2, and findings">
+        <figcaption><strong>Full display report.</strong> Tone curve, gray balance, shadows and highlights.</figcaption></figure>
+      <figure><img src="assets/screens/calibration.png" width="1600" height="1173" loading="lazy" alt="With the correction curves: gamma 2.43 to 2.20, yellowish grays to neutral">
+        <figcaption><strong>Windows calibration file.</strong> The display with and without the curves, measured.</figcaption></figure>
+      <figure><img src="assets/screens/monitor.png" width="1600" height="1393" loading="lazy" alt="A profile beside the monitor's settings, read over DDC/CI">
+        <figcaption><strong>Your monitor.</strong> Its settings read over DDC/CI, kept in profiles, loaded back with one button.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="phone">
+  <div class="wrap">
+    <h2>SoftCal Camera: your phone as the instrument</h2>
+    <p class="intro">No webcam? Install SoftCal Camera on an Android phone or tablet (Android 9 or later), or an iPhone
+      or iPad (iOS 16 or later), on the same Wi-Fi as your PC. SoftCal finds it by itself; type the 6-digit code it
+      shows and you are connected. On Android, it measures from the camera's raw sensor data when the phone offers it,
+      before any of the phone's own processing.</p>
+    <p class="phones"><img src="assets/screens/phones.png" width="1000" height="993" loading="lazy"
+      alt="SoftCal Camera on an Android phone, showing its pairing code, and on an iPhone, measuring"></p>
+    <div class="buttons">
+      <span class="button">Google Play<small>coming soon</small></span>
+      <span class="button">App Store<small>coming soon</small></span>
+      <a class="button" href="https://github.com/alexandrewillame/soft-color-calibrator/releases/latest">Download the APK<small>from the latest release</small></a>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <h2>What you need</h2>
+    <ul class="plain">
+      <li><strong>Windows 11</strong> (22H2 or later), and a second screen while measuring.</li>
+      <li><strong>A camera:</strong> a USB webcam that lets apps set its exposure, or a phone or tablet (Android, iPhone, iPad) with SoftCal Camera.</li>
+      <li>A short tube of black paper around the camera, and a stack of books to hold it against the screen.</li>
+      <li><strong>DDC/CI</strong> on the monitor, so SoftCal can set its values itself: most external monitors have it, some
+        need it turned on in their menu. Without it, SoftCal gives each value for the menu.</li>
+    </ul>
+    <p style="margin-top: 22px"><a class="button primary" href="https://github.com/alexandrewillame/soft-color-calibrator/releases/latest">Download for Windows</a></p>
+    <p class="note">Extract the zip to a folder where it will stay, then run SoftColorCalibrator.exe. If Windows says it
+      protected your PC, click More info, then Run anyway.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Private by design</h2>
+    <p class="intro">No account, no ads, no telemetry. Your measurements stay on your PC, and the phone talks only to
+      your PC, on your local network. <a href="privacy.html">Read the privacy policy</a>.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Alexandre Willame · Free software under the <a href="https://github.com/alexandrewillame/soft-color-calibrator/blob/main/LICENSE">GNU GPL v3</a></span>
+    <span><a href="https://github.com/alexandrewillame/soft-color-calibrator">Source code</a> · <a href="https://github.com/alexandrewillame/soft-color-calibrator/issues">Report a problem</a> · <a href="privacy.html">Privacy policy</a></span>
+  </div>
+</footer>
+</body>
+</html>

@@ -46,10 +46,10 @@ The phone apps are built apart: `build-phone.bat` for Android, `build-ios.sh` (o
 - Tests use xUnit v3 and AwesomeAssertions; the simulator (`SoftCal.Instruments.Simulated`) stands in for a display
   and a camera.
 
-## Pictures and the privacy policy
+## Project page and privacy policy
 
-The README's pictures are in `images/`. `docs/privacy.html` is the phone apps' privacy policy: Google Play and the App
-Store require one at a public address, so GitHub Pages publishes it from `docs/`.
+GitHub Pages publishes `docs/`: the project page (`index.html`, whose pictures the README shows too) and the phone
+apps' privacy policy (`privacy.html`), which Google Play and the App Store require at a public address.
 
 ## License
 
