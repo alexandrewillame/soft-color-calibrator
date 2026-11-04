@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher icon (Android 8 and later): the logo's tiles over its frame, shaped by the launcher. The single-color
+     layer is for themed icons (Android 13 and later). The layers are made from the app's logo. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+  <background android:drawable="@drawable/appicon_background" />
+  <foreground android:drawable="@mipmap/appicon_foreground" />
+  <monochrome android:drawable="@mipmap/appicon_monochrome" />
+</adaptive-icon>

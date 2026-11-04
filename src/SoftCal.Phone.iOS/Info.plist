@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- SoftCal Camera's app manifest. The build adds its name, bundle identifier, version, build number and minimum iOS
+     version from SoftCal.Phone.iOS.csproj. -->
+<plist version="1.0">
+<dict>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<!-- iPhone and iPad. -->
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+		<string>video-camera</string>
+	</array>
+	<!-- Portrait, as the Android app: the picture SoftCal sees is turned by the device's own orientation sensor. -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<!-- The camera works only for the app on screen, alone: no Split View or Slide Over on iPad. -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+	<!-- One window, run by SceneDelegate (iOS requires the scene life cycle from the release after iOS 26 on). -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	<!-- What iOS shows when it asks for the camera and the local network. -->
+	<key>NSCameraUsageDescription</key>
+	<string>SoftCal Camera measures your computer's screen with this camera, for Soft Color Calibrator on your PC. Nothing is recorded or saved.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Soft Color Calibrator on your PC finds this device on your Wi-Fi and connects to it, to measure with its camera.</string>
+	<!-- The DNS-SD service the app announces (docs/phone-link.md, Discovery). -->
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_softcal._tcp</string>
+	</array>
+	<!-- No encryption: the link only authenticates (HMAC), so the App Store's export questions do not apply. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>

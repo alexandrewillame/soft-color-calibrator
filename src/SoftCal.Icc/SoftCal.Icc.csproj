@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>SoftCal.Icc</RootNamespace>
+    <Description>ICC display profiles: a small v2.4 writer and reader with the 'vcgt' calibration curves.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftCal.Core\SoftCal.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SoftCal.Icc.Tests" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,258 @@
+<Application x:Class="SoftCal.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ThemeMode="Dark">
+  <Application.Resources>
+    <!-- Colors: the logo's dark frame and its blue. -->
+    <SolidColorBrush x:Key="BgBrush" Color="#16181C" />
+    <SolidColorBrush x:Key="NavBrush" Color="#101216" />
+    <SolidColorBrush x:Key="CardBrush" Color="#1F2228" />
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#262A31" />
+    <SolidColorBrush x:Key="LineBrush" Color="#2E323A" />
+    <SolidColorBrush x:Key="TextBrush" Color="#ECEEF1" />
+    <SolidColorBrush x:Key="TextDimBrush" Color="#A3A9B3" />
+    <SolidColorBrush x:Key="TextOffBrush" Color="#565C66" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#3D8BFD" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#1B3358" />
+    <SolidColorBrush x:Key="GoodBrush" Color="#45C46F" />
+    <SolidColorBrush x:Key="GoodSoftBrush" Color="#173322" />
+    <SolidColorBrush x:Key="WarnBrush" Color="#F2B24C" />
+    <SolidColorBrush x:Key="WarnSoftBrush" Color="#3A2F18" />
+    <SolidColorBrush x:Key="BadBrush" Color="#F0645A" />
+
+    <!-- Text -->
+    <Style x:Key="StepTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="26" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,0,6" />
+    </Style>
+    <Style x:Key="Lead" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+      <Setter Property="Margin" Value="0,0,0,20" />
+      <Setter Property="MaxWidth" Value="760" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+    <Style x:Key="Hint" TargetType="TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+      <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style x:Key="SectionTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style x:Key="FieldLabel" TargetType="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,0,16,0" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <!-- An (i) beside a label: its tooltip holds the explanation the screen leaves out. -->
+    <Style x:Key="InfoIcon" TargetType="TextBlock">
+      <Setter Property="Text" Value="&#xE946;" />
+      <Setter Property="FontFamily" Value="Segoe Fluent Icons, Segoe MDL2 Assets" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Margin" Value="8,0,0,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Help" />
+      <Setter Property="ToolTipService.InitialShowDelay" Value="100" />
+      <Setter Property="ToolTipService.ShowDuration" Value="60000" />
+    </Style>
+    <!-- Tooltips wrap at a readable width. -->
+    <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Type ToolTip}}">
+      <Setter Property="MaxWidth" Value="380" />
+      <Setter Property="ContentTemplate">
+        <Setter.Value>
+          <DataTemplate>
+            <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="SourceTag" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+    <!-- The icon before a side's title in step 1 (the profile, the monitor). -->
+    <Style x:Key="SideIcon" TargetType="TextBlock">
+      <Setter Property="FontFamily" Value="Segoe Fluent Icons, Segoe MDL2 Assets" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+    <!-- A profile's value beside the monitor's (step 1); those that differ are highlighted. -->
+    <Style x:Key="ProfileValue" TargetType="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- Surfaces -->
+    <Style x:Key="Card" TargetType="Border">
+      <Setter Property="Background" Value="{StaticResource CardBrush}" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="20" />
+      <Setter Property="Margin" Value="0,0,0,16" />
+    </Style>
+
+    <!-- Inputs -->
+    <!-- A short number (0-255). Fluent's text box shows a clear button while focused, which in a box this narrow hid
+         the digits being typed: the same look (theme brushes, accent underline when focused) without it. -->
+    <Style x:Key="NumberBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="Width" Value="64" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="MaxLength" Value="3" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TextBox">
+            <Border x:Name="Frame" CornerRadius="4" SnapsToDevicePixels="True"
+                    Background="{DynamicResource TextControlBackground}"
+                    BorderBrush="{DynamicResource TextControlElevationBorderBrush}"
+                    BorderThickness="{DynamicResource TextControlBorderThemeThickness}"
+                    MinHeight="{DynamicResource TextControlThemeMinHeight}">
+              <ScrollViewer x:Name="PART_ContentHost" Margin="6,0" VerticalAlignment="Center" Focusable="False"
+                            HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Frame" Property="Background" Value="{DynamicResource TextControlBackgroundPointerOver}" />
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Frame" Property="Background" Value="{DynamicResource TextControlBackgroundFocused}" />
+                <Setter TargetName="Frame" Property="BorderBrush" Value="{DynamicResource TextControlElevationBorderFocusedBrush}" />
+                <Setter TargetName="Frame" Property="BorderThickness" Value="{DynamicResource TextControlBorderThemeThicknessFocused}" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Frame" Property="Background" Value="{DynamicResource TextControlBackgroundDisabled}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextControlForegroundDisabled}" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!-- Buttons -->
+    <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="20,7" />
+    </Style>
+    <!-- A link in running text: accent colored, underlined when pointed at or focused. -->
+    <Style x:Key="LinkButton" TargetType="Button">
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Background="Transparent" Padding="2,1">
+              <TextBlock x:Name="Label" Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Label" Property="TextDecorations" Value="Underline" />
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="Label" Property="TextDecorations" Value="Underline" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource TextOffBrush}" />
+                <Setter Property="Cursor" Value="Arrow" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="NavLinkButton" TargetType="Button">
+      <Setter Property="Foreground" Value="{StaticResource TextDimBrush}" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Bd" Background="Transparent" CornerRadius="6" Padding="10,7">
+              <ContentPresenter HorizontalAlignment="Left" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <MultiTrigger>
+                <MultiTrigger.Conditions>
+                  <Condition Property="IsMouseOver" Value="True" />
+                  <Condition Property="IsEnabled" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="Bd" Property="Background" Value="{StaticResource CardHoverBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+              </MultiTrigger>
+              <Trigger Property="Tag" Value="Current">
+                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource TextOffBrush}" />
+                <Setter Property="Cursor" Value="Arrow" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!-- The step menu: numbered, greyed out when not reachable yet, no hover then. -->
+    <Style x:Key="NavList" TargetType="ListBox">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+    <Style x:Key="NavItem" TargetType="ListBoxItem">
+      <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ListBoxItem">
+            <Border x:Name="Bd" Background="Transparent" CornerRadius="8" Padding="10,9" Margin="0,2">
+              <DockPanel>
+                <Border x:Name="Num" Width="26" Height="26" CornerRadius="13" BorderThickness="1.5"
+                        BorderBrush="{StaticResource TextDimBrush}" Margin="0,0,12,0">
+                  <TextBlock Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" FontSize="12"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <ContentPresenter VerticalAlignment="Center" />
+              </DockPanel>
+            </Border>
+            <ControlTemplate.Triggers>
+              <MultiTrigger>
+                <MultiTrigger.Conditions>
+                  <Condition Property="IsMouseOver" Value="True" />
+                  <Condition Property="IsEnabled" Value="True" />
+                  <Condition Property="IsSelected" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="Bd" Property="Background" Value="{StaticResource CardHoverBrush}" />
+              </MultiTrigger>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                <Setter TargetName="Num" Property="Background" Value="{StaticResource AccentBrush}" />
+                <Setter TargetName="Num" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource TextOffBrush}" />
+                <Setter TargetName="Num" Property="BorderBrush" Value="{StaticResource TextOffBrush}" />
+                <Setter Property="Cursor" Value="Arrow" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Application.Resources>
+</Application>

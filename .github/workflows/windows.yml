@@ -1,0 +1,40 @@
+# Soft Color Calibrator for Windows: builds the solution and runs its tests on every push and pull request. Tests that
+# need a real display, webcam or network skip themselves here; they run only on a PC with SOFTCAL_HARDWARE=1 or
+# SOFTCAL_NETWORK=1 (CONTRIBUTING.md). The phone apps are not in the solution: ios.yml checks the iOS one.
+name: Windows app
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'src/SoftCal.Phone/**'
+      - 'src/SoftCal.Phone.iOS/**'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'src/SoftCal.Phone/**'
+      - 'src/SoftCal.Phone.iOS/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Build
+        run: dotnet build SoftColorCalibrator.slnx -c Release
+
+      - name: Test
+        run: dotnet test --solution SoftColorCalibrator.slnx -c Release --no-build

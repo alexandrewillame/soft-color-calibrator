@@ -1,0 +1,43 @@
+name: Problem
+description: Something does not work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting it. The run's log helps most: it is in `%LOCALAPPDATA%\SoftColorCalibrator\reports\`, in the folder of the monitor measured (the newest `.advice.txt`, or `.log.txt` for a report).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Soft Color Calibrator's version, and SoftCal Camera's if you measure with a phone.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: camera
+    attributes:
+      label: Camera
+      placeholder: Logitech C920e, or SoftCal Camera on a Galaxy S23
+  - type: input
+    id: monitor
+    attributes:
+      label: Monitor
+      placeholder: BenQ XL2720 over DisplayPort, DDC/CI on
+  - type: input
+    id: windows
+    attributes:
+      label: Windows
+      placeholder: Windows 11 24H2
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: Drag the run's log file here, or paste its lines.

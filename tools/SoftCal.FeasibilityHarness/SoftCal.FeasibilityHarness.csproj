@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <RootNamespace>SoftCal.FeasibilityHarness</RootNamespace>
+    <Description>M1 feasibility harness: runs and records the webcam instrument tests and platform probes.</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SoftCal.Core\SoftCal.Core.csproj" />
+    <ProjectReference Include="..\..\src\SoftCal.Instruments.Simulated\SoftCal.Instruments.Simulated.csproj" />
+    <ProjectReference Include="..\..\src\SoftCal.Instruments.Webcam\SoftCal.Instruments.Webcam.csproj" />
+    <ProjectReference Include="..\..\src\SoftCal.Windows\SoftCal.Windows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SoftCal.FeasibilityHarness.Tests" />
+  </ItemGroup>
+
+</Project>

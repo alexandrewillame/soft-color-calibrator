@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- SoftCal Camera for iPhone and iPad: the iOS app that lends the device's camera to SoftCal on the PC (see
+       docs/phone-link.md). The same app as the Android one (src/SoftCal.Phone), on the same protocol code. Built apart
+       from the PC solution, on a Mac: build-ios.sh, run there or by GitHub Actions (.github/workflows/ios.yml). It needs
+       the .NET iOS workload and the Xcode it asks for. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <SupportedOSPlatformVersion>16.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SoftCal.Phone.iOS</RootNamespace>
+    <AssemblyName>SoftCalCamera</AssemblyName>
+    <ApplicationId>com.softcolorcalibrator.camera</ApplicationId>
+    <ApplicationTitle>SoftCal Camera</ApplicationTitle>
+    <AppIcon>AppIcon</AppIcon>
+    <!-- Apple's deprecation notices (NSNetService) and the SDK's own are not this repository's warnings. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Camera frames are read in place from their pixel buffers. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- The version is the repository's (Directory.Build.props), as for the Android app. The App Store also needs a build
+       number that grows with every upload, made the same way as Google Play's version code: 0.1.0 is 100. -->
+  <PropertyGroup>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <SoftCalMajor>$([System.Version]::Parse('$(Version)').Major)</SoftCalMajor>
+    <SoftCalMinor>$([System.Version]::Parse('$(Version)').Minor)</SoftCalMinor>
+    <SoftCalPatch>$([System.Version]::Parse('$(Version)').Build)</SoftCalPatch>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($(SoftCalMajor), 10000)), $([MSBuild]::Multiply($(SoftCalMinor), 100)))), $(SoftCalPatch)))</ApplicationVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftCal.Remote\SoftCal.Remote.csproj" />
+  </ItemGroup>
+
+</Project>

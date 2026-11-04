@@ -1,0 +1,52 @@
+# Build output
+bin/
+obj/
+artifacts/
+TestResults/
+out/
+*.binlog
+
+# App packages, as build-phone.bat and build-ios.sh leave them (releases are made in artifacts\release)
+*.apk
+*.aab
+*.ipa
+
+# Signing keys and certificates: they live outside the repository, never in it
+*.keystore
+*.jks
+*.pfx
+*.p12
+*.p8
+*.mobileprovision
+*.cer
+*.csr
+
+# IDE / editor state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.swp
+
+# Python tooling
+__pycache__/
+.venv/
+
+# Windows and OneDrive clutter
+Thumbs.db
+desktop.ini
+
+# Local settings of tools (Claude Code)
+.claude/settings.local.json
+
+# Private scratch notes: never commit
+Notes.txt
+Notes-softCal.txt
+
+# Logo drafts (not ours to redistribute) and stray logs from other apps
+logo-temp/
+debug.log
+
+# On this PC only, never on GitHub: the release guides and tool, the press kit
+/local/

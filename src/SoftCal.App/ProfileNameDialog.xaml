@@ -1,0 +1,17 @@
+<Window x:Class="SoftCal.App.ProfileNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Profile" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}">
+  <StackPanel Margin="24,20,24,18" Width="420">
+    <TextBlock x:Name="Heading" Style="{StaticResource SectionTitle}" Text="New profile" />
+    <TextBlock x:Name="Explanation" Style="{StaticResource Hint}" />
+    <TextBlock Text="Name" Margin="0,0,0,6" />
+    <TextBox x:Name="NameBox" MaxLength="40" AutomationProperties.Name="Profile name" TextChanged="NameBox_TextChanged" />
+    <TextBlock x:Name="Problem" Foreground="{StaticResource WarnBrush}" TextWrapping="Wrap" Margin="0,6,0,0" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+      <Button x:Name="OkButton" Content="Create" MinWidth="96" IsDefault="True" Style="{StaticResource PrimaryButton}" Click="Ok_Click" />
+      <Button Content="Cancel" MinWidth="90" Margin="10,0,0,0" IsCancel="True" />
+    </StackPanel>
+  </StackPanel>
+</Window>

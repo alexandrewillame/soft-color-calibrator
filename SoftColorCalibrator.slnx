@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SoftCal.App/SoftCal.App.csproj" />
+    <Project Path="src/SoftCal.Core/SoftCal.Core.csproj" />
+    <Project Path="src/SoftCal.Icc/SoftCal.Icc.csproj" />
+    <Project Path="src/SoftCal.Instruments.Phone/SoftCal.Instruments.Phone.csproj" />
+    <Project Path="src/SoftCal.Instruments.Simulated/SoftCal.Instruments.Simulated.csproj" />
+    <Project Path="src/SoftCal.Instruments.Webcam/SoftCal.Instruments.Webcam.csproj" />
+    <Project Path="src/SoftCal.Remote/SoftCal.Remote.csproj" />
+    <Project Path="src/SoftCal.Windows/SoftCal.Windows.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/SoftCal.FeasibilityHarness/SoftCal.FeasibilityHarness.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SoftCal.Core.Tests/SoftCal.Core.Tests.csproj" />
+    <Project Path="tests/SoftCal.FeasibilityHarness.Tests/SoftCal.FeasibilityHarness.Tests.csproj" />
+    <Project Path="tests/SoftCal.Icc.Tests/SoftCal.Icc.Tests.csproj" />
+    <Project Path="tests/SoftCal.App.Tests/SoftCal.App.Tests.csproj" />
+    <Project Path="tests/SoftCal.Instruments.Phone.Tests/SoftCal.Instruments.Phone.Tests.csproj" />
+    <Project Path="tests/SoftCal.Instruments.Simulated.Tests/SoftCal.Instruments.Simulated.Tests.csproj" />
+    <Project Path="tests/SoftCal.Instruments.Webcam.Tests/SoftCal.Instruments.Webcam.Tests.csproj" />
+    <Project Path="tests/SoftCal.SafetyCrashHost/SoftCal.SafetyCrashHost.csproj" />
+    <Project Path="tests/SoftCal.Windows.Tests/SoftCal.Windows.Tests.csproj" />
+  </Folder>
+</Solution>

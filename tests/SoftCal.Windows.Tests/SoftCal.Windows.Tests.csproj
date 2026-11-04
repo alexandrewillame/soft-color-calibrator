@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <RootNamespace>SoftCal.Windows.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SoftCal.Windows\SoftCal.Windows.csproj" />
+    <!-- Built alongside the tests and launched by GuardianCrashTests; not referenced from code. -->
+    <ProjectReference Include="..\SoftCal.SafetyCrashHost\SoftCal.SafetyCrashHost.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <Target Name="CopySafetyCrashHost" AfterTargets="Build">
+    <ItemGroup>
+      <_CrashHostFiles Include="..\SoftCal.SafetyCrashHost\bin\$(Configuration)\$(TargetFramework)\SoftCal.SafetyCrashHost.*" />
+    </ItemGroup>
+    <!-- Next to the test assemblies, so the host finds SoftCal.Windows and its other dependencies. -->
+    <Copy SourceFiles="@(_CrashHostFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <ItemGroup>
+    <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

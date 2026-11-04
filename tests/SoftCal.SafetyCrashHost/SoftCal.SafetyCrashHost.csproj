@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <RootNamespace>SoftCal.SafetyCrashHost</RootNamespace>
+    <Description>Test helper: changes fake devices under the state journal until it is killed, so tests can check the guardian restores everything.</Description>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SoftCal.Windows\SoftCal.Windows.csproj" />
+  </ItemGroup>
+
+</Project>

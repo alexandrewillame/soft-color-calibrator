@@ -1,0 +1,628 @@
+<Window x:Class="SoftCal.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SoftCal.App"
+        Title="Soft Color Calibrator" Width="1060" Height="740" MinWidth="860" MinHeight="580"
+        WindowStartupLocation="CenterScreen" Icon="Assets/logo-128.png"
+        Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}">
+  <Window.Resources>
+    <!-- One thing to fix before measuring, with the button that opens where to fix it. -->
+    <DataTemplate x:Key="PreflightItemTemplate">
+      <Border Background="{StaticResource WarnSoftBrush}" CornerRadius="10" Padding="16,12" Margin="0,0,0,12">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Margin="12,0,0,0" VerticalAlignment="Center" Content="{Binding ActionLabel}"
+                  Visibility="{Binding ActionVisibility}" Click="PreflightAction_Click" />
+          <TextBlock Text="{Binding Text}" TextWrapping="Wrap" Foreground="{StaticResource WarnBrush}" VerticalAlignment="Center" />
+        </DockPanel>
+      </Border>
+    </DataTemplate>
+  </Window.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="232" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <!-- Menu -->
+    <Border Background="{StaticResource NavBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
+      <DockPanel Margin="14,22,14,16">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,28">
+          <Image Source="Assets/logo-128.png" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality" />
+          <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="Soft Color" FontSize="16" FontWeight="SemiBold" />
+            <TextBlock Text="Calibrator" FontSize="13" Foreground="{StaticResource TextDimBrush}" />
+          </StackPanel>
+        </StackPanel>
+        <Expander DockPanel.Dock="Bottom" x:Name="AdvancedExpander" Header="Advanced" Foreground="{StaticResource TextDimBrush}">
+          <StackPanel Margin="0,6,0,0">
+            <Button x:Name="ReportNavButton" Content="Full display report" Style="{StaticResource NavLinkButton}" Click="ReportNav_Click" />
+            <Button x:Name="CalibrationNavButton" Content="Windows calibration file" Style="{StaticResource NavLinkButton}" Click="CalibrationNav_Click" />
+            <CheckBox x:Name="SimulatedCheck" Content="Simulator" Margin="10,8,0,0"
+                      ToolTip="Try SoftCal with a pretend monitor and camera: nothing is measured or changed."
+                      Checked="Simulated_Changed" Unchecked="Simulated_Changed" />
+          </StackPanel>
+        </Expander>
+        <ListBox x:Name="StepList" Style="{StaticResource NavList}" ItemContainerStyle="{StaticResource NavItem}"
+                 AutomationProperties.Name="Steps" SelectionChanged="StepList_SelectionChanged">
+          <ListBoxItem Content="Your monitor" Tag="1" />
+          <ListBoxItem Content="Camera" Tag="2" />
+          <ListBoxItem Content="Measure" Tag="3" />
+          <ListBoxItem Content="Result" Tag="4" />
+        </ListBox>
+      </DockPanel>
+    </Border>
+
+    <!-- Content -->
+    <DockPanel Grid.Column="1" Margin="36,26,36,20">
+      <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,12,0,0">
+        <DockPanel>
+          <Button x:Name="NextButton" DockPanel.Dock="Right" Content="Next" MinWidth="110" IsDefault="True"
+                  Style="{StaticResource PrimaryButton}" Click="Next_Click" />
+          <Button x:Name="BackButton" DockPanel.Dock="Right" Content="Back" MinWidth="90" Margin="0,0,10,0" Click="Back_Click" />
+          <TextBlock x:Name="NextHint" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"
+                     Foreground="{StaticResource TextDimBrush}" />
+        </DockPanel>
+      </Border>
+
+      <!-- Over every screen that measures: what must be off first (Night light, a color filter), checked continuously. -->
+      <StackPanel DockPanel.Dock="Top" x:Name="BlockerBanner" Visibility="Collapsed" Margin="0,0,0,8">
+        <TextBlock Text="Turn this off to measure" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource WarnBrush}" Margin="0,0,0,10" />
+        <ItemsControl x:Name="BlockerList" AutomationProperties.Name="Turn this off to measure" ItemTemplate="{StaticResource PreflightItemTemplate}" />
+      </StackPanel>
+
+      <Grid>
+        <!-- 1. Your monitor -->
+        <ScrollViewer x:Name="MonitorStep" VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="780" HorizontalAlignment="Left">
+            <TextBlock Style="{StaticResource StepTitle}" Text="Your monitor" />
+            <TextBlock Style="{StaticResource Lead}" Text="Choose the display and the profile to work on, then check the monitor's settings against its menu." />
+
+            <ItemsControl x:Name="FindingList" AutomationProperties.Name="Things to fix first" ItemTemplate="{StaticResource PreflightItemTemplate}" />
+
+            <Border Style="{StaticResource Card}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" MaxWidth="400" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource FieldLabel}" Text="Display" />
+                <ComboBox Grid.Column="1" x:Name="MonitorList" AutomationProperties.Name="Display" SelectionChanged="MonitorList_SelectionChanged" />
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,16,0" VerticalAlignment="Center">
+                  <TextBlock VerticalAlignment="Center" Text="Panel type" />
+                  <TextBlock Style="{StaticResource InfoIcon}" AutomationProperties.Name="About the panel type"
+                             ToolTip="TN panels change their picture when seen from above or below. To check, look at a dark gray picture and move your head up and down: a TN panel gets much brighter or darker, or changes color (from below it can even look inverted). IPS and VA panels barely change." />
+                  <Button x:Name="PanelLookupButton" Style="{StaticResource LinkButton}" Margin="10,0,0,0" VerticalAlignment="Center" Content="Look it up"
+                          AutomationProperties.Name="Look up the panel type" Click="PanelLookup_Click"
+                          ToolTip="Not sure? Searches the web for this monitor's model and panel type, in your browser." />
+                </StackPanel>
+                <CheckBox Grid.Row="1" Grid.Column="1" x:Name="TnPanelCheck" Margin="0,12,0,0" VerticalAlignment="Center" Content="TN panel"
+                          Checked="TnPanel_Changed" Unchecked="TnPanel_Changed" />
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,16,0" VerticalAlignment="Center">
+                  <TextBlock VerticalAlignment="Center" Text="Match its white to" />
+                  <TextBlock Style="{StaticResource InfoIcon}" AutomationProperties.Name="About matching the white"
+                             ToolTip="Fixes a color cast. If this monitor looks too green, red or blue next to another screen you trust, SoftCal adjusts its Red, Green and Blue until its white looks the same as that screen's. The camera reads both screens, so its own color errors cancel out. &quot;Don't change the white&quot; keeps the colors as they are." />
+                </StackPanel>
+                <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ReferenceList" Margin="0,12,0,0" AutomationProperties.Name="Match its white to" />
+              </Grid>
+            </Border>
+
+            <!-- Two sides: the profile chosen (saved in SoftCal) on the left, the monitor as it is now on the right, the values
+                 that differ highlighted. Each side's buttons copy its values onto the other. -->
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <Grid x:Name="SettingsTable">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <!-- The profile's side: which one, and its buttons. -->
+                  <StackPanel Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Style="{StaticResource SideIcon}" Text="&#xE74E;" />
+                      <TextBlock Style="{StaticResource SectionTitle}" Margin="0" Text="Profile" />
+                      <TextBlock Style="{StaticResource InfoIcon}" AutomationProperties.Name="About profiles"
+                                 ToolTip="A profile is a set of monitor settings saved in SoftCal, with its own calibration. Most monitors need only one; make more for different uses (day, night, games…). Measuring adjusts the profile chosen here; it must match the monitor first." />
+                    </StackPanel>
+                    <WrapPanel Margin="0,10,0,0">
+                      <ComboBox x:Name="ProfileBox" Width="160" Margin="0,0,8,8" AutomationProperties.Name="Profile" SelectionChanged="Profile_SelectionChanged" />
+                      <Button x:Name="NewProfileButton" Content="New…" Margin="0,0,6,8" Click="NewProfile_Click" ToolTip="A new profile, from the monitor's settings" />
+                      <Button x:Name="RenameProfileButton" Content="Rename…" Margin="0,0,6,8" Click="RenameProfile_Click" />
+                      <Button x:Name="DeleteProfileButton" Content="Delete" Margin="0,0,0,8" Click="DeleteProfile_Click" />
+                    </WrapPanel>
+                    <Button x:Name="ApplyProfileButton" HorizontalAlignment="Left" Click="ApplyProfile_Click" AutomationProperties.Name="Load to the monitor"
+                            ToolTip="Puts this profile's settings on the monitor (right): over DDC/CI where it answers, the rest said for its menu. Windows switches to the profile's calibration. Asks first.">
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Load to the monitor" VerticalAlignment="Center" />
+                        <TextBlock Text="&#xE72A;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="6,0,0,0" />
+                      </StackPanel>
+                    </Button>
+                  </StackPanel>
+
+                  <!-- The monitor's side: reading it, and saving it into the profile. -->
+                  <StackPanel Grid.Column="3" Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Style="{StaticResource SideIcon}" Text="&#xE7F4;" />
+                      <TextBlock Style="{StaticResource SectionTitle}" Margin="0" Text="On the monitor" />
+                      <TextBlock Style="{StaticResource InfoIcon}" AutomationProperties.Name="About the monitor's settings"
+                                 ToolTip="What the monitor uses now: read over DDC/CI where it answers, the rest typed from its menu. Correct any value that is wrong." />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                      <Button x:Name="ReadDdcButton" Margin="0,0,8,0" Click="ReadDdc_Click" AutomationProperties.Name="Read from monitor"
+                              ToolTip="Reads Brightness, Contrast and Red, Green, Blue from the monitor (DDC/CI, reading only).">
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="&#xE72C;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" />
+                          <TextBlock Text="Read" VerticalAlignment="Center" />
+                        </StackPanel>
+                      </Button>
+                      <Button x:Name="SaveProfileButton" Click="SaveProfile_Click" AutomationProperties.Name="Save to profile"
+                              ToolTip="Stores the monitor's settings (this side) in the profile on the left. Asks first.">
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="&#xE72B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0" />
+                          <TextBlock Text="Save to profile" VerticalAlignment="Center" />
+                        </StackPanel>
+                      </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="DdcStatus" Margin="0,6,0,0" MaxWidth="240" HorizontalAlignment="Left" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextDimBrush}" AutomationProperties.LiveSetting="Polite" />
+                  </StackPanel>
+
+                  <Border Grid.Row="1" Grid.ColumnSpan="5" Height="1" Margin="0,12,0,4" Background="{StaticResource LineBrush}" />
+                  <Border Grid.Column="2" Grid.RowSpan="9" Width="1" Margin="16,0" Background="{StaticResource LineBrush}" />
+
+                  <TextBlock Grid.Row="2" Style="{StaticResource FieldLabel}" Text="Brightness" />
+                  <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ProfileBrightnessText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Brightness in the profile" />
+                  <TextBox Grid.Row="2" Grid.Column="3" x:Name="BrightnessBox" Style="{StaticResource NumberBox}" Margin="0,4" HorizontalAlignment="Left"
+                           AutomationProperties.Name="Brightness" PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                  <TextBlock Grid.Row="2" Grid.Column="4" x:Name="BrightnessSource" Style="{StaticResource SourceTag}" />
+
+                  <TextBlock Grid.Row="3" Style="{StaticResource FieldLabel}" Text="Contrast" />
+                  <TextBlock Grid.Row="3" Grid.Column="1" x:Name="ProfileContrastText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Contrast in the profile" />
+                  <TextBox Grid.Row="3" Grid.Column="3" x:Name="ContrastBox" Style="{StaticResource NumberBox}" Margin="0,4" HorizontalAlignment="Left"
+                           AutomationProperties.Name="Contrast" PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                  <TextBlock Grid.Row="3" Grid.Column="4" x:Name="ContrastSource" Style="{StaticResource SourceTag}" />
+
+                  <TextBlock Grid.Row="4" Style="{StaticResource FieldLabel}" Text="Color temperature" />
+                  <TextBlock Grid.Row="4" Grid.Column="1" x:Name="ProfilePresetText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Color temperature in the profile" />
+                  <ComboBox Grid.Row="4" Grid.Column="3" x:Name="PresetBox" Margin="0,4" AutomationProperties.Name="Color temperature"
+                            ToolTip="User: Red, Green and Blue set by hand. A preset: 6500 K, Normal, Warm…"
+                            SelectionChanged="MonitorFormSelection_Changed" />
+                  <TextBlock Grid.Row="4" Grid.Column="4" x:Name="PresetSource" Style="{StaticResource SourceTag}" />
+
+                  <TextBlock Grid.Row="5" Style="{StaticResource FieldLabel}" Text="Red, green, blue" />
+                  <TextBlock Grid.Row="5" Grid.Column="1" x:Name="ProfileGainsText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Red, green, blue in the profile" />
+                  <StackPanel Grid.Row="5" Grid.Column="3" Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="R" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#FF6B6B" FontWeight="SemiBold" />
+                    <TextBox x:Name="RedGainBox" Style="{StaticResource NumberBox}" Width="48" AutomationProperties.Name="Red"
+                             PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                    <TextBlock Text="G" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#5BD37F" FontWeight="SemiBold" />
+                    <TextBox x:Name="GreenGainBox" Style="{StaticResource NumberBox}" Width="48" AutomationProperties.Name="Green"
+                             PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                    <TextBlock Text="B" VerticalAlignment="Center" Margin="10,0,5,0" Foreground="#5AA2FF" FontWeight="SemiBold" />
+                    <TextBox x:Name="BlueGainBox" Style="{StaticResource NumberBox}" Width="48" AutomationProperties.Name="Blue"
+                             PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                  </StackPanel>
+                  <TextBlock Grid.Row="5" Grid.Column="4" x:Name="GainsSource" Style="{StaticResource SourceTag}" />
+
+                  <!-- Shown when the menu has them (More settings) or the profile sets them. -->
+                  <TextBlock Grid.Row="6" x:Name="GammaLabel" Style="{StaticResource FieldLabel}" Text="Gamma" />
+                  <TextBlock Grid.Row="6" Grid.Column="1" x:Name="ProfileGammaText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Gamma in the profile" />
+                  <TextBox Grid.Row="6" Grid.Column="3" x:Name="GammaBox" Margin="0,4" MaxLength="30" AutomationProperties.Name="Gamma setting now"
+                           IsEnabled="{Binding IsChecked, ElementName=HasGammaCheck}" ToolTip="As the menu shows it, e.g. Gamma 3" TextChanged="MonitorForm_Changed" />
+
+                  <TextBlock Grid.Row="7" x:Name="BoostLabel" Style="{StaticResource FieldLabel}" MaxWidth="150" Text="Shadow boost" />
+                  <TextBlock Grid.Row="7" Grid.Column="1" x:Name="ProfileBoostText" Style="{StaticResource ProfileValue}" AutomationProperties.HelpText="Shadow boost in the profile" />
+                  <TextBox Grid.Row="7" Grid.Column="3" x:Name="BoostValueBox" Style="{StaticResource NumberBox}" Margin="0,4" HorizontalAlignment="Left"
+                           AutomationProperties.Name="Shadow boost value" PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+
+                  <!-- Not on the simulator: it changes nothing in Windows. -->
+                  <StackPanel Grid.Row="8" x:Name="CalibrationLabel" Orientation="Horizontal" Margin="0,8,16,4" VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center" Text="Calibration" />
+                    <TextBlock Style="{StaticResource InfoIcon}" AutomationProperties.Name="About the calibration"
+                               ToolTip="The Windows calibration made by measuring with a profile (Advanced › Windows calibration file). Loading a profile switches Windows to its own, or to none." />
+                  </StackPanel>
+                  <TextBlock Grid.Row="8" Grid.Column="1" x:Name="ProfileCalibrationText" Style="{StaticResource ProfileValue}" Margin="0,8,0,4"
+                             AutomationProperties.HelpText="Calibration of the profile" />
+                  <TextBlock Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" x:Name="MonitorCalibrationText" Margin="0,8,0,4" VerticalAlignment="Center"
+                             MaxWidth="240" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" AutomationProperties.HelpText="Calibration in use" />
+                </Grid>
+
+                <TextBlock x:Name="ProfileStatus" Margin="0,14,0,0" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextDimBrush}" AutomationProperties.LiveSetting="Polite" />
+                <Expander Header="More settings (if your menu has them)" Margin="0,16,0,0" Foreground="{StaticResource TextDimBrush}">
+                  <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" MaxWidth="400" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto" />
+                      <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="HasGammaCheck" Content="Gamma setting" Margin="0,0,16,0" VerticalAlignment="Center" Foreground="{StaticResource TextBrush}"
+                              Checked="MonitorExtras_Changed" Unchecked="MonitorExtras_Changed" />
+                    <DockPanel Grid.Column="1" Margin="0,5">
+                      <TextBlock DockPanel.Dock="Left" Text="choices" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextDimBrush}" />
+                      <TextBox x:Name="GammaPresetsBox" MaxLength="200"
+                               AutomationProperties.Name="Gamma choices" IsEnabled="{Binding IsChecked, ElementName=HasGammaCheck}"
+                               ToolTip="In menu order, comma-separated: Gamma 1, Gamma 2, Gamma 3…" />
+                    </DockPanel>
+                    <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Foreground="{StaticResource TextBrush}" Text="Shadow boost" />
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
+                      <TextBox x:Name="BoostNameBox" Width="170" MaxLength="30" AutomationProperties.Name="Shadow boost name" TextChanged="MonitorExtras_Changed"
+                               ToolTip="Its name in the menu, e.g. Black eQualizer or Dark Boost; leave empty if there is none" />
+                      <TextBlock Text="highest" VerticalAlignment="Center" Margin="12,0,6,0" Foreground="{StaticResource TextDimBrush}" />
+                      <TextBox x:Name="BoostMaxBox" Style="{StaticResource NumberBox}" AutomationProperties.Name="Shadow boost highest value"
+                               PreviewTextInput="Digits_PreviewTextInput" TextChanged="MonitorForm_Changed" DataObject.Pasting="Digits_Pasting" />
+                    </StackPanel>
+                  </Grid>
+                </Expander>
+
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- 2. Camera -->
+        <DockPanel x:Name="CameraStep" Visibility="Collapsed">
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource StepTitle}" Text="Place the camera" />
+          <TextBlock DockPanel.Dock="Top" Style="{StaticResource Lead}"
+                     Text="Rest the camera on the outlined area of the measured display." />
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="290" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Card}" Padding="12" VerticalAlignment="Top" Margin="0,0,20,0">
+              <StackPanel>
+                <Grid MinHeight="200" MaxHeight="330" Background="Black">
+                  <Image x:Name="PreviewImage" Stretch="Uniform" AutomationProperties.Name="Camera view" />
+                  <local:TiltLevel x:Name="PreviewLevel" />
+                </Grid>
+                <TextBlock x:Name="PreviewStatus" TextWrapping="Wrap" Margin="4,10,4,2" Text="Starting the camera view…" />
+              </StackPanel>
+            </Border>
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+              <StackPanel Margin="0,0,6,0">
+                <StackPanel x:Name="CameraKindPanel" Orientation="Horizontal" Margin="0,0,0,12">
+                  <RadioButton x:Name="UseWebcamRadio" Content="USB webcam" GroupName="CameraKind" IsChecked="True" Margin="0,0,22,0"
+                               Checked="CameraKind_Checked" AutomationProperties.Name="Measure with a USB webcam" />
+                  <RadioButton x:Name="UsePhoneRadio" Content="Phone" GroupName="CameraKind"
+                               Checked="CameraKind_Checked" AutomationProperties.Name="Measure with a phone running SoftCal Camera" />
+                </StackPanel>
+                <ComboBox x:Name="CameraList" Margin="0,0,0,18" AutomationProperties.Name="Camera" SelectionChanged="CameraList_SelectionChanged" />
+
+                <!-- The phone: found on the network (or its address typed), paired with the code it shows. -->
+                <Border x:Name="PhonePanel" Style="{StaticResource Card}" Padding="14" Visibility="Collapsed">
+                  <StackPanel>
+                    <StackPanel x:Name="PhonePairing">
+                      <TextBlock Text="Phone" FontWeight="SemiBold" Margin="0,0,0,4" />
+                      <ComboBox x:Name="PhoneList" IsEditable="True" AutomationProperties.Name="Phone, or its address"
+                                ToolTip="Phones running SoftCal Camera on this network, or the address a phone shows" />
+                      <TextBlock Text="Code shown on the phone" FontWeight="SemiBold" Margin="0,12,0,4" />
+                      <DockPanel>
+                        <Button x:Name="PhoneConnectButton" DockPanel.Dock="Right" Content="Connect" Margin="10,0,0,0"
+                                Style="{StaticResource PrimaryButton}" Click="PhoneConnect_Click" />
+                        <TextBox x:Name="PhoneCodeBox" MaxLength="9" FontSize="16" HorizontalContentAlignment="Center"
+                                 AutomationProperties.Name="Code shown on the phone" KeyDown="PhoneCodeBox_KeyDown" />
+                      </DockPanel>
+                    </StackPanel>
+                    <TextBlock x:Name="PhoneStatus" TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource TextDimBrush}"
+                               AutomationProperties.LiveSetting="Polite" />
+                    <Button x:Name="PhoneDisconnectButton" Content="Disconnect" HorizontalAlignment="Left" Margin="0,10,0,0"
+                            Visibility="Collapsed" Click="PhoneDisconnect_Click" />
+                  </StackPanel>
+                </Border>
+
+                <TextBlock Style="{StaticResource SectionTitle}" Text="How to place it" />
+                <TextBlock x:Name="WebcamHowTo" TextWrapping="Wrap" LineHeight="22" Margin="0,0,0,18">
+                  <Run FontWeight="SemiBold" Text="1." /> <Run Text="Slide a black paper tube (8–10 cm) over the webcam." /><LineBreak />
+                  <Run FontWeight="SemiBold" Text="2." /> <Run Text="Rest it flat inside the outlined area, the dot inside the circle." /><LineBreak />
+                  <Run FontWeight="SemiBold" Text="3." /> <Run Text="Keep the room light as it is until the end." />
+                </TextBlock>
+                <TextBlock x:Name="PhoneHowTo" TextWrapping="Wrap" LineHeight="22" Margin="0,0,0,18" Visibility="Collapsed"
+                           ToolTip="The tube is shorter than the lens can focus: the screen's pixels blur together, as the measurement needs.">
+                  <Run FontWeight="SemiBold" Text="1." /> <Run x:Name="PhoneTubeRun" Text="Tape a black paper tube (about 4 cm) around the phone's main camera." /><LineBreak />
+                  <Run FontWeight="SemiBold" Text="2." /> <Run Text="Rest it flat inside the outlined area, the phone propped up, the dot inside the circle." /><LineBreak />
+                  <Run FontWeight="SemiBold" Text="3." /> <Run Text="Keep SoftCal Camera open in front, and the room light as it is." />
+                </TextBlock>
+                <CheckBox x:Name="CameraReadyCheck" Content="The camera is in place" FontWeight="SemiBold"
+                          Checked="NavInput_Changed" Unchecked="NavInput_Changed" />
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+        </DockPanel>
+
+        <!-- 3. Measure -->
+        <ScrollViewer x:Name="MeasureStep" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Style="{StaticResource StepTitle}" Text="Measure" />
+            <TextBlock Style="{StaticResource Lead}"
+                       Text="About 2–3 minutes. SoftCal asks here when something needs changing." />
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <CheckBox x:Name="DdcApplyCheck" IsChecked="True" Content="Let SoftCal change the monitor's settings"
+                          ToolTip="Brightness, Contrast and Red, Green, Blue, over DDC/CI when the monitor allows it. Otherwise SoftCal asks you to change them in its menu." />
+                <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                  <Button x:Name="AdviceStartButton" Content="Start" MinWidth="110" Style="{StaticResource PrimaryButton}" Click="AdviceStart_Click" />
+                  <Button x:Name="AdviceCancelButton" Content="Cancel" MinWidth="90" Margin="10,0,0,0" IsEnabled="False" Click="AdviceCancel_Click" />
+                </StackPanel>
+                <ProgressBar x:Name="MeasureProgress" Height="8" Margin="0,18,0,8" Maximum="100" Value="0" />
+                <TextBlock x:Name="MeasurePhaseText" Foreground="{StaticResource TextDimBrush}" TextWrapping="Wrap" />
+                <TextBlock x:Name="MeasureAlertText" Foreground="{StaticResource WarnBrush}" TextWrapping="Wrap" Margin="0,8,0,0"
+                           Visibility="Collapsed" AutomationProperties.LiveSetting="Assertive" />
+              </StackPanel>
+            </Border>
+            <Border x:Name="AdvicePanel" Visibility="Collapsed" CornerRadius="10" Padding="20" Margin="0,0,0,16"
+                    Background="{StaticResource AccentSoftBrush}" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
+              <StackPanel>
+                <TextBlock x:Name="AdviceTopic" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,6" />
+                <TextBlock x:Name="AdviceText" TextWrapping="Wrap" Margin="0,0,0,14" />
+                <Grid x:Name="AdviceCameraPanel" Visibility="Collapsed" Margin="0,0,0,14">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Border Background="Black" CornerRadius="6" Width="240" Height="135" ClipToBounds="True">
+                    <Grid>
+                      <Image x:Name="AdviceCameraImage" Stretch="Uniform" AutomationProperties.Name="Camera view" />
+                      <local:TiltLevel x:Name="AdviceCameraLevel" />
+                    </Grid>
+                  </Border>
+                  <TextBlock Grid.Column="1" x:Name="AdviceCameraStatus" TextWrapping="Wrap" VerticalAlignment="Center" Margin="16,0,0,0" />
+                </Grid>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock x:Name="AdviceValueLabel" Text="Value now set:" VerticalAlignment="Center" Margin="0,0,10,0" />
+                  <TextBox x:Name="AdviceValueBox" Style="{StaticResource NumberBox}" Margin="0,0,10,0" AutomationProperties.Name="Value now set" />
+                  <ComboBox x:Name="AdvicePresetBox" Width="180" Margin="0,0,10,0" AutomationProperties.Name="Preset now set" />
+                  <StackPanel x:Name="AdviceGainsPanel" Orientation="Horizontal" Margin="0,0,10,0" Visibility="Collapsed">
+                    <TextBlock Text="R" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="#FF6B6B" FontWeight="SemiBold" />
+                    <TextBox x:Name="AdviceRedBox" Style="{StaticResource NumberBox}" AutomationProperties.Name="Red now set"
+                             PreviewTextInput="Digits_PreviewTextInput" DataObject.Pasting="Digits_Pasting" />
+                    <TextBlock Text="G" VerticalAlignment="Center" Margin="12,0,6,0" Foreground="#5BD37F" FontWeight="SemiBold" />
+                    <TextBox x:Name="AdviceGreenBox" Style="{StaticResource NumberBox}" AutomationProperties.Name="Green now set"
+                             PreviewTextInput="Digits_PreviewTextInput" DataObject.Pasting="Digits_Pasting" />
+                    <TextBlock Text="B" VerticalAlignment="Center" Margin="12,0,6,0" Foreground="#5AA2FF" FontWeight="SemiBold" />
+                    <TextBox x:Name="AdviceBlueBox" Style="{StaticResource NumberBox}" AutomationProperties.Name="Blue now set"
+                             PreviewTextInput="Digits_PreviewTextInput" DataObject.Pasting="Digits_Pasting" />
+                  </StackPanel>
+                  <Button x:Name="AdviceDoneButton" Content="Done" MinWidth="100" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="AdviceDone_Click" />
+                  <Button x:Name="AdviceSetForMeButton" Content="Set it for me" MinWidth="120" Margin="0,0,10,0" Click="AdviceSetForMe_Click" Visibility="Collapsed" />
+                  <Button x:Name="AdviceStopButton" Content="Stop" MinWidth="80" Click="AdviceStop_Click" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Expander x:Name="DetailsExpander" Header="Details" Foreground="{StaticResource TextDimBrush}">
+              <DockPanel Margin="0,8,0,0">
+                <TextBlock DockPanel.Dock="Top" x:Name="MeterText" TextWrapping="Wrap" Margin="0,0,0,8" AutomationProperties.Name="Latest readings" />
+                <TextBox x:Name="AdviceLog" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="240"
+                         FontFamily="Consolas" AutomationProperties.Name="Measurement log" />
+              </DockPanel>
+            </Expander>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- 4. Result -->
+        <ScrollViewer x:Name="ResultStep" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="860" HorizontalAlignment="Left">
+            <TextBlock Style="{StaticResource StepTitle}" Text="Result" />
+            <TextBlock x:Name="ResultHeadline" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,4" TextWrapping="Wrap" />
+            <TextBlock x:Name="ResultSubline" Style="{StaticResource Lead}" Margin="0,0,0,8" />
+            <TextBlock x:Name="ResultMeasuredText" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{StaticResource TextDimBrush}"
+                       AutomationProperties.Name="How this result was measured" />
+            <Border Style="{StaticResource Card}" Padding="20,10">
+              <StackPanel>
+                <Grid Margin="0,4,0,6">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" MinWidth="120" />
+                    <ColumnDefinition Width="1.3*" MinWidth="80" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="1.5*" MinWidth="80" />
+                    <ColumnDefinition Width="140" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="SETTING" FontSize="11" Foreground="{StaticResource TextDimBrush}" />
+                  <TextBlock Grid.Column="1" Text="BEFORE" FontSize="11" Foreground="{StaticResource TextDimBrush}" />
+                  <TextBlock Grid.Column="3" Text="AFTER" FontSize="11" Foreground="{StaticResource TextDimBrush}" />
+                </Grid>
+                <ItemsControl x:Name="ResultRows" AutomationProperties.Name="Settings before and after">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0" Padding="0,12">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" MinWidth="120" />
+                            <ColumnDefinition Width="1.3*" MinWidth="80" />
+                            <ColumnDefinition Width="32" />
+                            <ColumnDefinition Width="1.5*" MinWidth="80" />
+                            <ColumnDefinition Width="140" />
+                          </Grid.ColumnDefinitions>
+                          <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                          </Grid.RowDefinitions>
+                          <TextBlock Text="{Binding Setting}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,12,0" />
+                          <TextBlock Grid.Column="1" Text="{Binding Before}" FontSize="15" Foreground="{StaticResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,8,0" />
+                          <TextBlock Grid.Column="2" Text="→" FontSize="15" Foreground="{StaticResource TextDimBrush}" />
+                          <TextBlock Grid.Column="3" Text="{Binding After}" FontSize="15" FontWeight="SemiBold" Foreground="{Binding AfterBrush}" TextWrapping="Wrap" Margin="0,0,8,0" />
+                          <Border Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="10" Padding="10,2" Background="{Binding TagBackground}">
+                            <TextBlock Text="{Binding TagText}" FontSize="12" Foreground="{Binding TagForeground}" />
+                          </Border>
+                          <TextBlock Grid.Row="1" Grid.ColumnSpan="5" Text="{Binding Why}" TextWrapping="Wrap" Margin="0,4,0,0"
+                                     Foreground="{StaticResource TextDimBrush}" />
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+            <Border x:Name="ResultLimitsCard" Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="What these settings cannot fix" />
+                <ItemsControl x:Name="ResultLimits">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding StringFormat='•  {0}'}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource TextDimBrush}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+            <StackPanel Orientation="Horizontal">
+              <Button x:Name="ResultAgainButton" Content="Measure again" MinWidth="130" Click="ResultAgain_Click" />
+            </StackPanel>
+            <TextBlock x:Name="ResultSavedText" Margin="0,12,0,0" Foreground="{StaticResource TextDimBrush}" TextWrapping="Wrap" />
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Advanced: full display report -->
+        <ScrollViewer x:Name="ReportStep" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+          <TextBlock Style="{StaticResource StepTitle}" Text="Full display report" />
+          <TextBlock Style="{StaticResource Lead}"
+                     Text="About 3 minutes: tone curve, gray balance, shadows and highlights. Not needed for the monitor settings." />
+          <WrapPanel Margin="0,0,0,4">
+            <Button x:Name="StartButton" Content="Measure" MinWidth="110" Margin="0,0,10,6" Style="{StaticResource PrimaryButton}" Click="Start_Click" />
+            <Button x:Name="CancelButton" Content="Cancel" MinWidth="90" Margin="0,0,24,6" IsEnabled="False" Click="Cancel_Click" />
+            <Button x:Name="OpenReportButton" Content="Open the full report" Margin="0,0,10,6" IsEnabled="False" Click="OpenReport_Click" />
+            <Button Content="Show report folder" Margin="0,0,0,6" Click="ShowFolder_Click" />
+          </WrapPanel>
+          <ProgressBar x:Name="BusyBar" Height="6" Margin="0,0,0,10" Visibility="Hidden" IsIndeterminate="True" />
+          <TextBlock x:Name="ReportTitle" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10"
+                     Text="No report yet." />
+          <Grid x:Name="ReportCharts" Visibility="Collapsed" Height="360" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Background="{StaticResource CardBrush}" CornerRadius="10" Margin="0,0,12,0" Padding="12,10">
+              <DockPanel>
+                <TextBlock DockPanel.Dock="Top" FontSize="12" Foreground="{StaticResource TextDimBrush}" TextWrapping="Wrap" Margin="0,0,0,6"
+                           Text="Tone curve: light for each level, black (left) to white (right)" />
+                <WrapPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
+                  <TextBlock FontSize="12" Margin="0,0,14,0"><Run Foreground="{StaticResource AccentBrush}" Text="—" /> <Run Foreground="{StaticResource TextDimBrush}" Text="this report" /></TextBlock>
+                  <TextBlock x:Name="ToneEarlierLegend" FontSize="12" Margin="0,0,14,0" Visibility="Collapsed"><Run Foreground="Gray" Text="—" /> <Run Foreground="{StaticResource TextDimBrush}" Text="earlier report" /></TextBlock>
+                  <TextBlock FontSize="12"><Run Foreground="{StaticResource TextOffBrush}" Text="- -" /> <Run Foreground="{StaticResource TextDimBrush}" Text="gamma 2.2" /></TextBlock>
+                </WrapPanel>
+                <Canvas x:Name="ToneCanvas" ClipToBounds="True" SizeChanged="ToneCanvas_SizeChanged"
+                        AutomationProperties.Name="Tone curve: measured points against gamma 2.2" />
+              </DockPanel>
+            </Border>
+            <ListBox Grid.Column="1" x:Name="ReportFindings" ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutomationProperties.Name="Report findings">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,4" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+          <DockPanel x:Name="ReportCompare" Margin="0,0,0,10" Visibility="Collapsed">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+              <TextBlock Text="Compare with" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="SemiBold" />
+              <ComboBox x:Name="CompareList" Width="420" SelectionChanged="Compare_SelectionChanged" AutomationProperties.Name="Earlier report to compare with" />
+            </StackPanel>
+            <ListView x:Name="ComparisonTable" Height="150" AutomationProperties.Name="Before and after comparison">
+              <ListView.View>
+                <GridView>
+                  <GridViewColumn Header="" Width="230" DisplayMemberBinding="{Binding Quantity}" />
+                  <GridViewColumn Header="Earlier report" Width="190" DisplayMemberBinding="{Binding Before}" />
+                  <GridViewColumn Header="This report" Width="190" DisplayMemberBinding="{Binding After}" />
+                  <GridViewColumn Header="" Width="90" DisplayMemberBinding="{Binding Verdict}" />
+                </GridView>
+              </ListView.View>
+            </ListView>
+          </DockPanel>
+          <Expander Header="Measurement log" Foreground="{StaticResource TextDimBrush}" Margin="0,0,0,10">
+            <TextBox x:Name="LogBox" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="150"
+                     FontFamily="Consolas" AutomationProperties.Name="Report measurement log" />
+          </Expander>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Advanced: Windows calibration file -->
+        <ScrollViewer x:Name="CalibrateStep" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+          <StackPanel>
+            <TextBlock Style="{StaticResource StepTitle}" Text="Windows calibration file" />
+            <TextBlock Style="{StaticResource Lead}"
+                       Text="Optional: correction curves the graphics card applies to everything on screen." />
+            <WrapPanel Margin="0,0,0,8">
+              <TextBlock Text="Tone" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold" />
+              <ComboBox x:Name="ToneTargetBox" Width="250" SelectedIndex="0" AutomationProperties.Name="Tone target">
+                <ComboBoxItem Content="Gamma 2.2 (recommended)" />
+                <ComboBoxItem Content="sRGB curve (lighter near black)" />
+                <ComboBoxItem Content="Keep the display's own tone" />
+              </ComboBox>
+              <CheckBox x:Name="NeutralGraysCheck" Content="Make grays neutral" IsChecked="True" VerticalAlignment="Center" Margin="16,0,0,0"
+                        ToolTip="Corrects each color channel so grays have no tint. Unticked, only the tone is corrected." />
+              <CheckBox x:Name="RefineCheck" Content="Second pass" IsChecked="True" VerticalAlignment="Center" Margin="16,0,0,0"
+                        ToolTip="Measures again with the curves and refines them: more accurate, about 2 minutes more." />
+            </WrapPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <TextBlock x:Name="CalibrationBaseText" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="460" Foreground="{StaticResource TextDimBrush}" />
+              <CheckBox x:Name="RemeasureCheck" Content="Measure it again first" VerticalAlignment="Center" Margin="12,0,0,0" />
+            </StackPanel>
+            <WrapPanel Margin="0,0,0,4">
+              <Button x:Name="CalibrateStartButton" Content="Create" MinWidth="100" Margin="0,0,10,6" Style="{StaticResource PrimaryButton}" Click="CalibrateStart_Click"
+                      ToolTip="Measures the display with trial curves (2–3 minutes); the graphics card's curves are put back afterwards" />
+              <Button x:Name="CalibrateCancelButton" Content="Cancel" MinWidth="90" Margin="0,0,20,6" IsEnabled="False" Click="CalibrateCancel_Click" />
+              <Button x:Name="InstallButton" Content="Install…" MinWidth="90" Margin="0,0,10,6" IsEnabled="False" Click="Install_Click"
+                      ToolTip="Makes Windows use the curves (no administrator prompt)" />
+              <Button x:Name="DiscardButton" Content="Discard" MinWidth="90" Margin="0,0,0,6" IsEnabled="False" Click="Discard_Click" />
+            </WrapPanel>
+            <Border Style="{StaticResource Card}" Padding="14">
+              <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                  <Button x:Name="CheckCalibrationButton" Content="Check" MinWidth="80" Margin="10,0,8,0" Click="CheckCalibration_Click"
+                          ToolTip="Compares the curves in the graphics card with the installed profile's (instant, no camera)" />
+                  <Button x:Name="VerifyButton" Content="Verify" MinWidth="80" Margin="0,0,8,0" Click="Verify_Click"
+                          ToolTip="Measures the display with the installed calibration left on (about 1.5 minutes, camera in place)" />
+                  <Button x:Name="RevertButton" Content="Remove…" MinWidth="90" Click="Revert_Click"
+                          ToolTip="Removes the installed calibration and puts everything back as it was" />
+                </StackPanel>
+                <StackPanel>
+                  <TextBlock x:Name="InstalledText" TextWrapping="Wrap" />
+                  <CheckBox x:Name="RestoreLoaderCheck" Margin="0,6,0,0" IsChecked="True" Content="Also restore Windows' own loader when removing"
+                            ToolTip="Puts 'Use Windows display calibration' back as it was before this calibration (administrator prompt)." />
+                </StackPanel>
+              </DockPanel>
+            </Border>
+            <ProgressBar x:Name="CalibrateBusy" Height="6" Margin="0,0,0,10" Visibility="Hidden" IsIndeterminate="True" />
+            <ListView x:Name="CalibrationTable" Height="180" Margin="0,0,0,10" Visibility="Collapsed" AutomationProperties.Name="Calibration before and after">
+              <ListView.View>
+                <GridView>
+                  <GridViewColumn Header="" Width="230" DisplayMemberBinding="{Binding Quantity}" />
+                  <GridViewColumn x:Name="CalibrationBeforeColumn" Header="Now (no curves)" Width="190" DisplayMemberBinding="{Binding Before}" />
+                  <GridViewColumn x:Name="CalibrationAfterColumn" Header="With the curves" Width="190" DisplayMemberBinding="{Binding After}" />
+                  <GridViewColumn Header="" Width="90" DisplayMemberBinding="{Binding Verdict}" />
+                </GridView>
+              </ListView.View>
+            </ListView>
+            <TextBox x:Name="CalibrateLog" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Visibility="Collapsed"
+                     Height="240" FontFamily="Consolas" AutomationProperties.Name="Calibration log" />
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </DockPanel>
+  </Grid>
+</Window>

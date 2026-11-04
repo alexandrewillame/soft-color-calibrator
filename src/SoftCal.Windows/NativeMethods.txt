@@ -1,0 +1,116 @@
+// Patch window (one top-most borderless window per monitor, per-monitor DPI v2)
+RegisterClassEx
+UnregisterClass
+CreateWindowEx
+DestroyWindow
+DefWindowProc
+PeekMessage
+PEEK_MESSAGE_REMOVE_TYPE
+TranslateMessage
+DispatchMessage
+PostMessage
+PostQuitMessage
+ShowWindow
+SetWindowPos
+GetClientRect
+GetModuleHandle
+SetCursor
+SetThreadDpiAwarenessContext
+DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+GetDpiForWindow
+HWND_TOPMOST
+WM_DESTROY
+WM_CLOSE
+WM_QUIT
+WM_SETCURSOR
+WM_ERASEBKGND
+WM_APP
+WM_MOUSEACTIVATE
+MA_NOACTIVATE
+SetThreadExecutionState
+DwmSetWindowAttribute
+DWMWINDOWATTRIBUTE
+EXECUTION_STATE
+
+// Watching the patch: a visible pointer over it spoils a reading
+GetCursorInfo
+CURSORINFO
+CURSORINFO_FLAGS
+
+// Moving SoftCal's own window off a screen the camera must rest on
+GetWindowRect
+MonitorFromWindow
+IsZoomed
+
+// Monitors
+EnumDisplayMonitors
+GetMonitorInfo
+MONITORINFOEXW
+GetDpiForMonitor
+GetDisplayConfigBufferSizes
+QueryDisplayConfig
+DisplayConfigGetDeviceInfo
+DISPLAYCONFIG_TARGET_DEVICE_NAME
+DISPLAYCONFIG_SOURCE_DEVICE_NAME
+DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO
+DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2
+DISPLAYCONFIG_SDR_WHITE_LEVEL
+
+// Gamma ramps
+CreateDC
+DeleteDC
+GetDeviceGammaRamp
+SetDeviceGammaRamp
+
+// DDC/CI. Never the capabilities request (CapabilitiesRequestAndCapabilitiesReply, GetCapabilitiesStringLength):
+// a malformed reply can crash Windows. A unit test checks that neither is ever generated.
+GetNumberOfPhysicalMonitorsFromHMONITOR
+GetPhysicalMonitorsFromHMONITOR
+GetVCPFeatureAndVCPFeatureReply
+SetVCPFeature
+DestroyPhysicalMonitors
+DestroyPhysicalMonitor
+PHYSICAL_MONITOR
+
+// Advanced color: HDR and Auto Color Management switches (journaled and restored)
+DisplayConfigSetDeviceInfo
+DISPLAYCONFIG_SET_HDR_STATE
+DISPLAYCONFIG_SET_WCG_STATE
+DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE
+
+// OS state probes (read-only)
+GetSystemPowerStatus
+PowerGetActiveScheme
+PowerReadACValueIndex
+PowerReadDCValueIndex
+LocalFree
+WcsGetCalibrationManagementState
+RegNotifyChangeKeyValue
+
+// Keep the display awake while measuring
+PowerCreateRequest
+PowerSetRequest
+PowerClearRequest
+CloseHandle
+POWER_REQUEST_CONTEXT_FLAGS
+POWER_REQUEST_CONTEXT_VERSION
+
+// Color profiles: install, per-display association (current user), and the Windows calibration loader switch
+InstallColorProfile
+UninstallColorProfile
+GetColorDirectory
+ColorProfileAddDisplayAssociation
+ColorProfileRemoveDisplayAssociation
+ColorProfileGetDisplayDefault
+ColorProfileSetDisplayDefaultAssociation
+WcsSetCalibrationManagementState
+WCS_PROFILE_MANAGEMENT_SCOPE
+COLORPROFILETYPE
+COLORPROFILESUBTYPE
+WcsGetUsePerUserProfiles
+WcsSetUsePerUserProfiles
+EnumDisplayDevices
+DISPLAY_DEVICEW
+ColorProfileGetDeviceCapabilities
+WCS_DEVICE_CAPABILITIES_TYPE
+WCS_DEVICE_MHC2_CAPABILITIES

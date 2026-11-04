@@ -1,0 +1,70 @@
+# SoftCal Camera for iPhone and iPad, built on a Mac in GitHub's cloud: no Mac of your own needed (build-ios.sh does the
+# work).
+# - On every push to a branch, or pull request, that touches the iOS app or the protocol: a simulator build, to check it
+#   compiles. Not on tags: a release's tag would build code that may predate an iOS fix.
+# - By hand (Actions › iOS app › Run workflow): the signed app for the App Store, kept as the run's artifact and, when
+#   asked, uploaded to App Store Connect for TestFlight. That needs the signing secrets used below.
+name: iOS app
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'src/SoftCal.Phone.iOS/**'
+      - 'src/SoftCal.Remote/**'
+      - 'Directory.Build.props'
+      - 'global.json'
+      - 'build-ios.sh'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'src/SoftCal.Phone.iOS/**'
+      - 'src/SoftCal.Remote/**'
+      - 'Directory.Build.props'
+      - 'global.json'
+      - 'build-ios.sh'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload the signed app to App Store Connect (TestFlight)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  ios:
+    # A recent macOS with the Xcode versions the .NET iOS workload asks for (build-ios.sh picks the right one).
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Check (simulator build)
+        if: github.event_name != 'workflow_dispatch'
+        run: bash build-ios.sh check
+
+      - name: Signed app for the App Store
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_KEY_BASE64 }}
+        run: bash build-ios.sh ${{ inputs.upload && 'upload' || 'ipa' }}
+
+      - name: Keep the app
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v7
+        with:
+          name: SoftCalCamera-ios
+          path: artifacts/release/*/app-store/*.ipa
+          if-no-files-found: error

@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- SoftCal Camera: the Android app that lends a phone's camera to SoftCal on the PC (see docs/phone-link.md).
+       Built apart from the PC solution (build-phone.bat): it needs the .NET Android workload, a JDK and the Android SDK. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>28</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SoftCal.Phone</RootNamespace>
+    <AssemblyName>SoftCalCamera</AssemblyName>
+    <ApplicationId>com.softcolorcalibrator.camera</ApplicationId>
+    <ApplicationTitle>SoftCal Camera</ApplicationTitle>
+    <!-- Android's own analyzers and SDK notices are not this repository's warnings. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Camera frames are read in place from their direct buffers. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- The version is the repository's (Directory.Build.props), so the phone app always matches the PC app. Google Play
+       also needs a whole number that grows with every upload, made from it: 0.1.0 is 100, 0.1.1 is 101, 1.2.3 is 10203
+       (so minor and patch stay below 100). -->
+  <PropertyGroup>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <SoftCalMajor>$([System.Version]::Parse('$(Version)').Major)</SoftCalMajor>
+    <SoftCalMinor>$([System.Version]::Parse('$(Version)').Minor)</SoftCalMinor>
+    <SoftCalPatch>$([System.Version]::Parse('$(Version)').Build)</SoftCalPatch>
+    <ApplicationVersion>$([MSBuild]::Add($([MSBuild]::Add($([MSBuild]::Multiply($(SoftCalMajor), 10000)), $([MSBuild]::Multiply($(SoftCalMinor), 100)))), $(SoftCalPatch)))</ApplicationVersion>
+  </PropertyGroup>
+
+  <!-- A Release build makes both: the .aab is what Google Play takes, the .apk installs directly on a phone. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <AndroidPackageFormats>aab;apk</AndroidPackageFormats>
+  </PropertyGroup>
+
+  <!-- Signed with the app's own key when build-phone.bat has made it (kept with the Android tools, outside this
+       repository; the password is read from its file), so each build installs over the last one. On Google Play it is
+       the upload key: Google signs the app that people download with its own key (Play App Signing). -->
+  <PropertyGroup Condition="Exists('$(USERPROFILE)\Android\softcal-camera.keystore')">
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>$(USERPROFILE)\Android\softcal-camera.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>softcal-camera</AndroidSigningKeyAlias>
+    <AndroidSigningStorePass>file:$(USERPROFILE)\Android\softcal-camera.password</AndroidSigningStorePass>
+    <AndroidSigningKeyPass>file:$(USERPROFILE)\Android\softcal-camera.password</AndroidSigningKeyPass>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftCal.Remote\SoftCal.Remote.csproj" />
+  </ItemGroup>
+
+  <!-- The toolchain installed for this repository lives outside AppData (see build-phone.bat). -->
+  <PropertyGroup>
+    <AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('$(USERPROFILE)\Android\Sdk')">$(USERPROFILE)\Android\Sdk</AndroidSdkDirectory>
+    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' and Exists('$(USERPROFILE)\Android\openjdk')">$(USERPROFILE)\Android\openjdk</JavaSdkDirectory>
+  </PropertyGroup>
+
+</Project>

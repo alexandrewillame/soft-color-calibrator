@@ -1,0 +1,12 @@
+<Project>
+  <!-- The repository's shared settings. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..'))" />
+
+  <!-- An Android build creates and deletes thousands of files: they stay out of the synced folder, whose sync client
+       locks them (the build then fails with "access denied"). build-phone.bat copies the finished app back here. -->
+  <PropertyGroup>
+    <SoftCalPhoneBuild>$(USERPROFILE)\Android\build\SoftCal.Phone\</SoftCalPhoneBuild>
+    <BaseIntermediateOutputPath>$(SoftCalPhoneBuild)obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(SoftCalPhoneBuild)bin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>

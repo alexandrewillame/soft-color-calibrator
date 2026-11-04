@@ -1,0 +1,13 @@
+# Text files are stored with LF line endings; Windows checkouts get CRLF (see .editorconfig).
+* text=auto
+
+# Scripts keep the line endings their shell needs.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sh text eol=lf
+
+# Binary files: stored as they are, never diffed or merged as text.
+*.png binary
+*.jpg binary
+*.ico binary
+*.icc binary

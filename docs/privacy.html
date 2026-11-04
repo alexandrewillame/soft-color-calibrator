@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy · Soft Color Calibrator and SoftCal Camera</title>
+<meta name="description" content="Privacy policy of Soft Color Calibrator (Windows) and SoftCal Camera (Android, iPhone and iPad).">
+<style>
+  :root { color-scheme: light dark; --text: #1f2328; --muted: #59636e; --line: #d1d9e0; --box: #f6f8fa; --link: #0969da; }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e6edf3; --muted: #9198a1; --line: #3d444d; --box: #151b23; --link: #4493f8; }
+  }
+  body { margin: 0; background: Canvas; color: var(--text); font: 16px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  main, footer { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  main { padding-top: 32px; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; }
+  h2 { font-size: 21px; margin: 32px 0 8px; }
+  h3 { font-size: 17px; margin: 22px 0 6px; }
+  a { color: var(--link); }
+  .date { color: var(--muted); margin-top: 0; }
+  .summary { background: var(--box); border: 1px solid var(--line); border-radius: 8px; padding: 4px 18px; margin: 18px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 15px; }
+  th, td { text-align: left; vertical-align: top; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  code { font-family: Consolas, monospace; font-size: 14px; }
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; margin-top: 40px;
+           padding-top: 18px; padding-bottom: 32px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<main class="doc">
+  <h1>Privacy policy</h1>
+  <p class="date">Soft Color Calibrator (Windows) and SoftCal Camera (Android, iPhone and iPad) · Effective 3 November 2026</p>
+
+  <p>Soft Color Calibrator and its companion app for Android, iPhone and iPad, SoftCal Camera, are free, open-source apps made by
+    <strong>Alexandre Willame</strong> (“I” below). This policy explains what the apps do with your data. The short
+    version: they do not send me, or anyone else, anything.</p>
+
+  <div class="summary">
+    <ul>
+      <li>No account, no ads, no analytics, no tracking, no third-party code that collects data.</li>
+      <li>I run no servers and never receive any data from the apps.</li>
+      <li>SoftCal Camera sends its camera measurements only to Soft Color Calibrator on <em>your own PC</em>, over your
+        local network, while you use them together.</li>
+      <li>Soft Color Calibrator keeps its files on your PC.</li>
+    </ul>
+  </div>
+
+  <h2>SoftCal Camera (Android, iPhone and iPad)</h2>
+
+  <h3>The camera</h3>
+  <p>SoftCal Camera uses your phone's back camera only to measure your computer's screen, and only while Soft Color
+    Calibrator on your PC asks for it: the camera turns on when the PC asks for a picture or a measurement, and off 10
+    seconds after the last request. The app never saves pictures or videos on your phone, and keeps no history.</p>
+
+  <h3>What it sends, and to whom</h3>
+  <p>It sends data only to the copy of Soft Color Calibrator that you pair it with by typing the 6-digit code the phone
+    shows, on your local network. The phone's screen always says what it is sending and how often.</p>
+  <table>
+    <tr><th>What</th><th>When</th><th>Why</th></tr>
+    <tr><td>Small gray (black and white) pictures of what the camera sees</td><td>While you place the phone on the screen, a few per second</td><td>To show the camera's view on the PC, so you can aim it</td></tr>
+    <tr><td>Numbers: the average color and brightness of the measured area of each camera frame, and when the frame was taken</td><td>While measuring, about 30 times a second</td><td>The measurement itself</td></tr>
+    <tr><td>The phone's maker and model, the app's version, and its camera's capabilities (for example its exposure range)</td><td>When the PC connects</td><td>To show which phone is connected, check that both apps speak the same version, and set the camera up</td></tr>
+  </table>
+  <p>None of this goes to the internet, to me, or to any third party. When the connection ends, the phone puts its
+    camera back to automatic and forgets the session.</p>
+
+  <h3>Being found on your network</h3>
+  <p>While it is open, the app announces itself on your local network under your phone's model name (the way printers
+    and speakers do, with DNS-SD, called Bonjour on Apple devices), so that your PC can list it. Other devices on the
+    same network can see that announcement. It stops when you close the app (on an iPhone or iPad, as soon as the app
+    leaves the screen). On an iPhone or iPad, iOS first asks your permission for the local network.</p>
+
+  <h3>Security</h3>
+  <p>The 6-digit code never travels over the network: each side proves it knows it, and after 5 wrong attempts the phone
+    shows a new one. Only one PC can be connected at a time. The connection itself is not encrypted: it carries
+    measurement numbers and gray pictures of your screen. Use the apps on a network you trust, such as your home Wi-Fi,
+    rather than public Wi-Fi.</p>
+
+  <h3>Permissions</h3>
+  <p>On Android:</p>
+  <table>
+    <tr><th>Permission</th><th>Used for</th></tr>
+    <tr><td>Camera</td><td>Measuring your screen (asked the first time you open the app)</td></tr>
+    <tr><td>Internet, network state, Wi-Fi state, Wi-Fi multicast</td><td>Talking to your PC on the local network and letting it find the phone. The app makes no internet connections.</td></tr>
+    <tr><td>Prevent the phone from sleeping (wake lock)</td><td>Keeping Wi-Fi responsive while measuring</td></tr>
+  </table>
+  <p>On iPhone and iPad:</p>
+  <table>
+    <tr><th>Permission</th><th>Used for</th></tr>
+    <tr><td>Camera</td><td>Measuring your screen (asked the first time you open the app)</td></tr>
+    <tr><td>Local Network</td><td>Letting your PC find the device and connect to it on your local network. The app makes no internet connections.</td></tr>
+  </table>
+  <p>On iPhone and iPad, the app's App Store page shows "Data Not Collected", and the privacy manifest inside the app
+    says the same.</p>
+  <p>The app has two links, which open in your browser only when you tap them: “Privacy policy” opens this page, and the
+    address of the project on GitHub (shown until your PC connects) opens the page where Soft Color Calibrator for
+    Windows is downloaded. The app itself sends nothing to either site.</p>
+
+  <h2>Soft Color Calibrator (Windows)</h2>
+  <p>Soft Color Calibrator keeps everything it makes on your PC, in <code>%LOCALAPPDATA%\SoftColorCalibrator</code>:
+    measurements, reports, your monitor profiles and settings, calibration files and logs. These include your monitors'
+    names and model identifiers (read from the monitors themselves) and the name of the camera or phone that measured.
+    It never uploads them, has no telemetry, and does not check for updates online.</p>
+  <ul>
+    <li><strong>Webcam:</strong> used only in the camera and measuring steps; pictures are analysed in memory and never
+      saved.</li>
+    <li><strong>Phone:</strong> the PC connects to the phone you choose; it does not accept incoming connections.</li>
+    <li><strong>Web search:</strong> if you click “Look it up” next to Panel type, your browser opens a web search
+      (Google Search) for your monitor's model. That search is covered by the search engine's own privacy policy.</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>The apps are not directed at children, and they collect no personal information from anyone.</p>
+
+  <h2>Keeping and deleting your data</h2>
+  <p>I hold no data about you, so there is nothing to request or delete on my side. Everything stays on your devices,
+    under your control: uninstall SoftCal Camera to remove it from your phone; on your PC, remove any installed
+    calibration from within the app, delete its folder, and delete <code>%LOCALAPPDATA%\SoftColorCalibrator</code>.</p>
+
+  <h2>Check it yourself</h2>
+  <p>Both apps are open source: everything described here can be verified in the
+    <a href="https://github.com/alexandrewillame/soft-color-calibrator">source code</a>.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the new version will be posted on this page with a new effective date, and the release
+    notes will say so.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about privacy: open an issue on
+    <a href="https://github.com/alexandrewillame/soft-color-calibrator/issues">GitHub</a>, or use the developer contact
+    on the app's store page.</p>
+</main>
+
+<footer>
+  <span>© 2026 Alexandre Willame · <a href="https://github.com/alexandrewillame/soft-color-calibrator/blob/main/LICENSE">GNU GPL v3</a></span>
+  <span><a href="https://github.com/alexandrewillame/soft-color-calibrator">Source code</a></span>
+</footer>
+</body>
+</html>

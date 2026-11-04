@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>SoftCal.Instruments.Simulated</RootNamespace>
+    <Description>Simulated display and camera with known ground truth, for tests and hardware-free development.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftCal.Core\SoftCal.Core.csproj" />
+  </ItemGroup>
+
+</Project>

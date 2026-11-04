@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <RootNamespace>SoftCal.App</RootNamespace>
+    <AssemblyName>SoftColorCalibrator</AssemblyName>
+    <Description>Soft Color Calibrator: measures a display with a webcam and reports its tone curve, gray balance and more.</Description>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>SoftCal.App.Program</StartupObject>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <!-- WPF's Fluent ThemeMode is still marked experimental in .NET 10. -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\logo-128.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SoftCal.App.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SoftCal.Core\SoftCal.Core.csproj" />
+    <ProjectReference Include="..\SoftCal.Windows\SoftCal.Windows.csproj" />
+    <ProjectReference Include="..\SoftCal.Icc\SoftCal.Icc.csproj" />
+    <ProjectReference Include="..\SoftCal.Instruments.Webcam\SoftCal.Instruments.Webcam.csproj" />
+    <ProjectReference Include="..\SoftCal.Instruments.Phone\SoftCal.Instruments.Phone.csproj" />
+    <ProjectReference Include="..\SoftCal.Instruments.Simulated\SoftCal.Instruments.Simulated.csproj" />
+  </ItemGroup>
+
+</Project>

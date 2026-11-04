@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>SoftCal.Remote</RootNamespace>
+    <Description>The phone link: the protocol between SoftCal on the PC and SoftCal Camera on a phone (messages, pairing, clock sync, the phone's server and the PC's client), and the phone's frame statistics. Shared by both sides.</Description>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SoftCal.Instruments.Phone.Tests" />
+  </ItemGroup>
+
+</Project>
