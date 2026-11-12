@@ -16,11 +16,7 @@ free Windows app that measures your monitor, then **changes the monitor's own br
 blue, directly from the app**, over DDC/CI. No color profile to install: the monitor itself is corrected. It also
 matches your monitor's white to another screen. Your phone measures with **SoftCal Camera**, its companion app.
 
-**[Download for Windows](https://github.com/alexandrewillame/soft-color-calibrator/releases/latest)** ·
-[Report a problem](https://github.com/alexandrewillame/soft-color-calibrator/issues)
-
-> [!NOTE]
-> An early version: it works, and everything it changes is put back, but expect rough edges. Feedback is very welcome.
+**[Download for Windows](https://github.com/alexandrewillame/soft-color-calibrator/releases/latest)**
 
 <table>
   <tr>
@@ -56,7 +52,6 @@ monitor's settings** turned off, SoftCal gives each value to set in the monitor'
   telemetry.
 
 ## How it works
-
 A camera is not a colorimeter: its own colors and tone curve are unknown. So SoftCal never asks it *what* it sees,
 only **which of two things is brighter**. It shows fine black and white lines whose light is known, then grays, and
 finds the gray the camera cannot tell from the lines: the camera's own response cancels out. On the development
